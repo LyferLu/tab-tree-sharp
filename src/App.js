@@ -69,6 +69,7 @@ class App extends React.Component {
         visited.push(currentTab.id);
         if (currentTab.children) queue.push(...currentTab.children);
       };
+      // TODO: Reconnect the children to the parent
       chrome.tabs.remove(visited, () => {
         this.initTree()
       }) 
@@ -124,7 +125,7 @@ class App extends React.Component {
                 />
                 {nodeData.id === this.state.focusTabId ? (<u>{nodeData.title}</u>) : nodeData.title}
               </div>
-              <div onClick={() => {this.closeTabInner(nodeData.id)}}>
+              <div onClick={() => {this.closeTabInner(nodeData.id)}} style={{marginRight: "0.5rem"}}>
                 <CloseCircleOutlined />
               </div>
               <div onClick={() => {this.closeTabOuter(nodeData.id)}}>
