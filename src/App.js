@@ -3,8 +3,9 @@ import React from "react";
 import "./App.css";
 import { Tree, Card, Image } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { GithubOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { GithubOutlined, CloseCircleOutlined, ShrinkOutlined } from '@ant-design/icons';
 import faviconNewtabIcon from './favicon_newtab.png';
+import { useState } from "react/cjs/react.production.min";
 
 function buildTabObj(chromeTab) {
   console.log("chromeTab: ", chromeTab)
@@ -67,6 +68,28 @@ class App extends React.Component {
       }) 
   }
 
+  closeTabOuter(tabId) {
+      let currentTab = this.state.tabMap[tabId];
+      let visited = [], queue = [];
+      queue.push(currentTab);
+      while (queue.length) {
+        currentTab = queue.shift();
+        visited.push(currentTab.id);
+        if (currentTab.children) queue.push(...currentTab.children);
+      };
+      chrome.tabs.query({}, tabs => {
+        let unvisited = [];
+        tabs.forEach(tab => {
+          if (!visited.includes(tab.id)) {
+            unvisited.push(tab.id)
+          }
+        })
+        chrome.tabs.remove(unvisited, () => {
+          this.initTree()
+        })
+      })
+  }
+
   render() {
     return (
       <div className="App">
@@ -97,6 +120,9 @@ class App extends React.Component {
               </div>
               <div onClick={() => {this.closeTabInner(nodeData.id)}}>
                 <CloseCircleOutlined />
+              </div>
+              <div onClick={() => {this.closeTabOuter(nodeData.id)}}>
+                <ShrinkOutlined />
               </div>
               
               </div>)}
