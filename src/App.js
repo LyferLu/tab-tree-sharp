@@ -101,7 +101,7 @@ class App extends React.Component {
               
               </div>)}
             />
-          ) : ( "暂无数据" )}
+          ) : ( "No data" )}
         </Card>
       </div>
     );
