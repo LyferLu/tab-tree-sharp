@@ -39,11 +39,32 @@ class App extends React.Component {
     chrome.tabs.query({}, tabs =>  {
         chrome.storage.local.get(['openerTabIdMap'], result =>  {
           let openerTabIdMap = result.openerTabIdMap || {}
+          
+          let aliveTabIds = tabs.map(tab => tab.id)
+
+          Object.keys(openerTabIdMap).forEach(key => {
+            if (!aliveTabIds.includes(parseInt(key))) {
+              delete openerTabIdMap[key]
+            }
+            let openerTabId = openerTabIdMap[key]
+            if (!aliveTabIds.includes(openerTabId)) {
+              delete openerTabIdMap[key]
+            }
+          })
+
+          chrome.storage.local.set({ openerTabIdMap });
+
           tabs.forEach(tab => {
             let tabObj = buildTabObj(tab)
             tabObj.openerTabId = openerTabIdMap[tab.id]
             tabMap[tabObj.id] = tabObj
+          })
+          tabs.forEach(tab => {
+            let tabObj = tabMap[tab.id]
             if(tabObj.openerTabId) {
+              if (!tabMap[tabObj.openerTabId]) {
+                console.log("openerTabId not found: ", tabObj.openerTabId)
+              }
               tabMap[tabObj.openerTabId].children.push(tabObj)
             } else {
               roots.push(tabObj)
@@ -53,10 +74,8 @@ class App extends React.Component {
         })
       }
     )
-    chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {  
-      let [currentTab] = tabs
-      console.log("currentTab: ", currentTab)
-      this.setState({focusTabId: currentTab.id})
+    chrome.storage.local.get(['focusTabId'], result => {
+      this.setState({ focusTabId: result.focusTabId })
     })
   }
   
@@ -69,7 +88,6 @@ class App extends React.Component {
         visited.push(currentTab.id);
         if (currentTab.children) queue.push(...currentTab.children);
       };
-      // TODO: Reconnect the children to the parent
       chrome.tabs.remove(visited, () => {
         this.initTree()
       }) 
