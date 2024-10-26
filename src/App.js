@@ -26,6 +26,7 @@ class App extends React.Component {
     this.state = {
       value: null,
       roots: [],
+      focusTabId: null,
     };
   }
   componentDidMount() {
@@ -52,6 +53,11 @@ class App extends React.Component {
         })
       }
     )
+    chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {  
+      let [currentTab] = tabs
+      console.log("currentTab: ", currentTab)
+      this.setState({focusTabId: currentTab.id})
+    })
   }
   
   closeTabInner(tabId) {
@@ -116,7 +122,7 @@ class App extends React.Component {
                   src={nodeData.favIconUrl}
                   fallback={faviconNewtabIcon}
                 />
-                {nodeData.title}
+                {nodeData.id === this.state.focusTabId ? (<u>{nodeData.title}</u>) : nodeData.title}
               </div>
               <div onClick={() => {this.closeTabInner(nodeData.id)}}>
                 <CloseCircleOutlined />
