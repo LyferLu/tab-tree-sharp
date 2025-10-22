@@ -119,8 +119,8 @@ class App extends React.Component {
     return (
       <div className="App">
         <Card
-          title="TabTree++"
-          extra={<a href="https://github.com/cychen2021/tab-tree-plus-plus"  target={'_blank'} rel="noreferrer"><GithubOutlined /></a>}
+          title="TabTree#"
+          extra={<a href="https://github.com/LyferLu/tab-tree-sharp"  target={'_blank'} rel="noreferrer"><GithubOutlined /></a>}
           style={{ width: 600 }}
         >
           {this.state.roots.length > 0 ? (

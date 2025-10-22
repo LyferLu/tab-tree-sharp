@@ -1,6 +1,6 @@
-# TabTree++
+# TabTree#
 
-A tree view of your browser tabs. This project is a fork of [Tab Tree](https://github.com/gaoliang/tab-tree).
+A tree view of your browser tabs. This project is a fork of [TabTree++](https://github.com/cychen2021/tab-tree-plus-plus).
 
 ![screenshot](screenshot.png)
 
